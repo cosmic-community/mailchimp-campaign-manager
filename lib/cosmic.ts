@@ -55,3 +55,149 @@ export async function safeGetObject(type: string, slug: string, props?: string[]
     return { object: null, error: handleCosmicError(error) }
   }
 }
+
+// Campaigns
+export async function getCampaigns(limit?: number) {
+  try {
+    const { objects } = await cosmicReadOnly.objects
+      .find({ type: 'campaigns' })
+      .props(['id', 'title', 'slug', 'metadata', 'created_at'])
+      .depth(1)
+      .limit(limit || 100)
+    return objects || []
+  } catch (error) {
+    console.error('Error fetching campaigns:', error)
+    return []
+  }
+}
+
+export async function getCampaign(id: string) {
+  try {
+    const { object } = await cosmicReadOnly.objects
+      .findOne({ type: 'campaigns', id })
+      .props(['id', 'title', 'slug', 'metadata', 'created_at'])
+      .depth(1)
+    return object
+  } catch (error) {
+    console.error(`Error fetching campaign ${id}:`, error)
+    return null
+  }
+}
+
+export async function createCampaign(data: any) {
+  try {
+    const { object } = await cosmic.objects.insertOne({
+      title: data.title,
+      type: 'campaigns',
+      metadata: data.metadata
+    })
+    return object
+  } catch (error) {
+    console.error('Error creating campaign:', error)
+    throw error
+  }
+}
+
+// Contacts
+export async function getContacts(limit?: number) {
+  try {
+    const { objects } = await cosmicReadOnly.objects
+      .find({ type: 'contacts' })
+      .props(['id', 'title', 'slug', 'metadata', 'created_at'])
+      .depth(1)
+      .limit(limit || 1000)
+    return objects || []
+  } catch (error) {
+    console.error('Error fetching contacts:', error)
+    return []
+  }
+}
+
+export async function createContact(data: any) {
+  try {
+    const { object } = await cosmic.objects.insertOne({
+      title: data.title || data.email,
+      type: 'contacts',
+      metadata: data.metadata
+    })
+    return object
+  } catch (error) {
+    console.error('Error creating contact:', error)
+    throw error
+  }
+}
+
+// Email Templates
+export async function getEmailTemplates(limit?: number) {
+  try {
+    const { objects } = await cosmicReadOnly.objects
+      .find({ type: 'email-templates' })
+      .props(['id', 'title', 'slug', 'metadata', 'created_at'])
+      .depth(1)
+      .limit(limit || 100)
+    return objects || []
+  } catch (error) {
+    console.error('Error fetching email templates:', error)
+    return []
+  }
+}
+
+export async function createEmailTemplate(data: any) {
+  try {
+    const { object } = await cosmic.objects.insertOne({
+      title: data.title,
+      type: 'email-templates',
+      metadata: data.metadata
+    })
+    return object
+  } catch (error) {
+    console.error('Error creating email template:', error)
+    throw error
+  }
+}
+
+export async function generateEmailTemplate(prompt: string) {
+  // This would integrate with an AI service like OpenAI
+  // For now, return a basic template
+  return {
+    subject: 'Generated Email Subject',
+    html_content: `<h1>Generated Email</h1><p>Content based on: ${prompt}</p>`,
+    text_content: `Generated Email\n\nContent based on: ${prompt}`
+  }
+}
+
+// Dashboard Stats
+export async function getDashboardStats() {
+  try {
+    const [campaigns, contacts, templates] = await Promise.all([
+      getCampaigns(),
+      getContacts(),
+      getEmailTemplates()
+    ])
+
+    const subscribedContacts = contacts.filter(contact => 
+      contact.metadata?.status === 'subscribed'
+    )
+
+    const sentCampaigns = campaigns.filter(campaign => 
+      campaign.metadata?.status === 'sent'
+    )
+
+    return {
+      totalCampaigns: campaigns.length,
+      totalContacts: contacts.length,
+      subscribedContacts: subscribedContacts.length,
+      totalTemplates: templates.length,
+      sentCampaigns: sentCampaigns.length
+    }
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error)
+    return {
+      totalCampaigns: 0,
+      totalContacts: 0,
+      subscribedContacts: 0,
+      totalTemplates: 0,
+      sentCampaigns: 0
+    }
+  }
+}

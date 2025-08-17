@@ -6,7 +6,7 @@ interface CosmicBadgeProps {
   bucketSlug: string
 }
 
-export default function CosmicBadge({ bucketSlug }: CosmicBadgeProps) {
+export default function CosmicBadge({ bucketSlug }: CosmicBadgeProps): JSX.Element | null {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -23,7 +23,9 @@ export default function CosmicBadge({ bucketSlug }: CosmicBadgeProps) {
     localStorage.setItem('cosmic-badge-dismissed', 'true')
   }
 
-  if (!isVisible || !bucketSlug) return null
+  if (!isVisible || !bucketSlug) {
+    return null
+  }
 
   return (
     <div 

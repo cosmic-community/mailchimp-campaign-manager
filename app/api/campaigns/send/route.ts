@@ -1,7 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getCampaign, getContacts } from '@/lib/cosmic';
-import type { Contact } from '@/types';
+
+interface Contact {
+  id: string;
+  title: string;
+  metadata: {
+    email: string;
+    status: string;
+    tags?: string[];
+  };
+}
+
+interface Campaign {
+  id: string;
+  title: string;
+  metadata: {
+    template?: {
+      title: string;
+      metadata?: {
+        subject?: string;
+        html_content?: string;
+      };
+    };
+    target_tags?: string[];
+    status: string;
+    send_date?: string;
+  };
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,7 +42,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const campaign = await getCampaign(campaign_id);
+    const campaign = await getCampaign(campaign_id) as Campaign | null;
     if (!campaign) {
       return NextResponse.json(
         { error: 'Campaign not found' },
@@ -65,21 +91,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Get target contacts
-    const allContacts = await getContacts(1000);
+    const allContacts = await getContacts(1000) as Contact[];
     let targetContacts: Contact[] = [];
 
     if (campaign.metadata.target_tags && campaign.metadata.target_tags.length > 0) {
       // Filter contacts by tags
-      targetContacts = allContacts.filter(contact => 
+      targetContacts = allContacts.filter((contact: Contact) => 
         contact.metadata.status === 'subscribed' &&
         contact.metadata.tags &&
-        campaign.metadata.target_tags?.some(tag => 
+        campaign.metadata.target_tags?.some((tag: string) => 
           contact.metadata.tags?.includes(tag)
         )
       );
     } else {
       // Send to all subscribed contacts
-      targetContacts = allContacts.filter(contact => 
+      targetContacts = allContacts.filter((contact: Contact) => 
         contact.metadata.status === 'subscribed'
       );
     }
@@ -101,7 +127,7 @@ export async function POST(request: NextRequest) {
       const batch = targetContacts.slice(i, i + batchSize);
       
       try {
-        const emailPromises = batch.map(async (contact) => {
+        const emailPromises = batch.map(async (contact: Contact) => {
           try {
             const { data, error } = await resend.emails.send({
               from: 'noreply@yourdomain.com',

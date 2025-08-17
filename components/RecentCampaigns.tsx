@@ -1,8 +1,22 @@
 import Link from 'next/link';
 import { getCampaigns } from '@/lib/cosmic';
 
+interface Campaign {
+  id: string;
+  title: string;
+  slug: string;
+  metadata: {
+    status: string;
+    send_date?: string;
+    template?: {
+      title: string;
+    };
+  };
+  created_at: string;
+}
+
 export default async function RecentCampaigns() {
-  const campaigns = await getCampaigns(5);
+  const campaigns = await getCampaigns(5) as Campaign[];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -46,7 +60,7 @@ export default async function RecentCampaigns() {
         </div>
       ) : (
         <div className="space-y-4">
-          {campaigns.map((campaign) => (
+          {campaigns.map((campaign: Campaign) => (
             <div key={campaign.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex-1">
                 <h3 className="font-medium text-gray-900 mb-1">
