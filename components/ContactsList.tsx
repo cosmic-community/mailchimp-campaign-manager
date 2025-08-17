@@ -10,9 +10,24 @@ interface ContactsListProps {
 export default function ContactsList({ contacts }: ContactsListProps) {
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
+  const getStatusValue = (status: any): string => {
+    if (typeof status === 'object' && status?.key) {
+      return status.key;
+    }
+    return status || 'pending';
+  };
+
+  const getStatusDisplay = (status: any): string => {
+    if (typeof status === 'object' && status?.value) {
+      return status.value;
+    }
+    return status || 'Pending';
+  };
+
   const filteredContacts = contacts.filter(contact => {
     if (filterStatus === 'all') return true;
-    return contact.metadata.status === filterStatus;
+    const statusValue = getStatusValue(contact.metadata.status);
+    return statusValue === filterStatus;
   });
 
   const getStatusColor = (status: string) => {
@@ -80,50 +95,57 @@ export default function ContactsList({ contacts }: ContactsListProps) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredContacts.map((contact) => (
-              <tr key={contact.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {contact.metadata.first_name && contact.metadata.last_name
-                        ? `${contact.metadata.first_name} ${contact.metadata.last_name}`
-                        : contact.metadata.email
-                      }
+            {filteredContacts.map((contact) => {
+              const statusValue = getStatusValue(contact.metadata.status);
+              const statusDisplay = getStatusDisplay(contact.metadata.status);
+              
+              return (
+                <tr key={contact.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {contact.metadata.first_name && contact.metadata.last_name
+                          ? `${contact.metadata.first_name} ${contact.metadata.last_name}`
+                          : contact.metadata.email
+                        }
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {contact.metadata.email}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {contact.metadata.email}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`badge ${getStatusColor(statusValue)}`}>
+                      {statusDisplay}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-wrap gap-1">
+                      {contact.metadata.tags && contact.metadata.tags.length > 0 ? (
+                        contact.metadata.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="badge badge-info"
+                          >
+                            {tag}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-sm text-gray-400">No tags</span>
+                      )}
                     </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`badge ${getStatusColor(contact.metadata.status)}`}>
-                    {contact.metadata.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex flex-wrap gap-1">
-                    {contact.metadata.tags?.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="badge badge-info"
-                      >
-                        {tag}
-                      </span>
-                    )) || (
-                      <span className="text-sm text-gray-400">No tags</span>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-primary hover:text-primary-dark mr-3">
-                    Edit
-                  </button>
-                  <button className="text-red-600 hover:text-red-900">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button className="text-primary hover:text-primary-dark mr-3">
+                      Edit
+                    </button>
+                    <button className="text-red-600 hover:text-red-900">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

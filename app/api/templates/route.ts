@@ -14,10 +14,13 @@ export async function POST(request: NextRequest) {
     }
 
     const template = await createEmailTemplate({
-      name: body.name,
-      subject: body.subject,
-      html_content: body.html_content,
-      category: body.category
+      title: body.name,
+      metadata: {
+        name: body.name,
+        subject: body.subject,
+        html_content: body.html_content,
+        category: body.category
+      }
     });
 
     return NextResponse.json(template);

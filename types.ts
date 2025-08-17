@@ -8,14 +8,23 @@ export interface CosmicObject {
   metadata: Record<string, any>;
 }
 
+export interface CosmicSelectValue {
+  key: string;
+  value: string;
+}
+
+export interface CosmicFile {
+  url: string;
+  imgix_url: string;
+}
+
 export interface Campaign extends CosmicObject {
   metadata: {
-    status: 'draft' | 'scheduled' | 'sent' | 'paused';
+    name: string;
     template?: EmailTemplate;
-    target_tags?: string[];
+    status: CosmicSelectValue;
     send_date?: string;
-    subject?: string;
-    description?: string;
+    target_tags?: string[];
     notes?: string;
   };
 }
@@ -25,24 +34,18 @@ export interface Contact extends CosmicObject {
     email: string;
     first_name?: string;
     last_name?: string;
-    status: 'subscribed' | 'unsubscribed' | 'pending';
-    tags?: string[];
-    source?: string;
-    subscribed_at?: string;
+    status: CosmicSelectValue;
+    tags?: string[] | null;
   };
 }
 
 export interface EmailTemplate extends CosmicObject {
   metadata: {
+    name: string;
     subject: string;
     html_content: string;
-    text_content?: string;
-    preview_text?: string;
-    category?: string;
-    is_active?: boolean;
-    preview_image?: {
-      imgix_url: string;
-    };
+    preview_image?: CosmicFile;
+    category?: CosmicSelectValue;
   };
 }
 

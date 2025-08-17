@@ -10,8 +10,9 @@ interface TemplatesListProps {
 export default function TemplatesList({ templates }: TemplatesListProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
 
-  const getCategoryColor = (category?: string) => {
-    switch (category) {
+  const getCategoryColor = (category?: any) => {
+    const categoryValue = typeof category === 'object' ? category?.key : category;
+    switch (categoryValue) {
       case 'newsletter':
         return 'badge-info';
       case 'promotional':
@@ -23,6 +24,13 @@ export default function TemplatesList({ templates }: TemplatesListProps) {
       default:
         return 'badge-info';
     }
+  };
+
+  const getCategoryDisplay = (category?: any): string => {
+    if (typeof category === 'object' && category?.value) {
+      return category.value;
+    }
+    return category || 'General';
   };
 
   if (templates.length === 0) {
@@ -66,7 +74,7 @@ export default function TemplatesList({ templates }: TemplatesListProps) {
               </h3>
               {template.metadata.category && (
                 <span className={`badge ${getCategoryColor(template.metadata.category)}`}>
-                  {template.metadata.category}
+                  {getCategoryDisplay(template.metadata.category)}
                 </span>
               )}
             </div>

@@ -14,12 +14,15 @@ export async function POST(request: NextRequest) {
     }
 
     const campaign = await createCampaign({
-      name: body.name,
-      template_id: body.template_id,
-      status: body.status,
-      send_date: body.send_date,
-      target_tags: body.target_tags,
-      notes: body.notes
+      title: body.name,
+      metadata: {
+        name: body.name,
+        template: body.template_id,
+        status: body.status,
+        send_date: body.send_date,
+        target_tags: body.target_tags,
+        notes: body.notes
+      }
     });
 
     return NextResponse.json(campaign);

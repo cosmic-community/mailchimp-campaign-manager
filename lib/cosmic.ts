@@ -86,7 +86,17 @@ export async function getCampaign(id: string) {
   }
 }
 
-export async function createCampaign(data: any) {
+export async function createCampaign(data: {
+  title: string;
+  metadata: {
+    name: string;
+    template: string;
+    status: string;
+    send_date?: string;
+    target_tags?: string[];
+    notes?: string;
+  };
+}) {
   try {
     const { object } = await cosmic.objects.insertOne({
       title: data.title,
@@ -115,10 +125,19 @@ export async function getContacts(limit?: number) {
   }
 }
 
-export async function createContact(data: any) {
+export async function createContact(data: {
+  title: string;
+  metadata: {
+    email: string;
+    first_name?: string;
+    last_name?: string;
+    status: string;
+    tags?: string[];
+  };
+}) {
   try {
     const { object } = await cosmic.objects.insertOne({
-      title: data.title || data.email,
+      title: data.title,
       type: 'contacts',
       metadata: data.metadata
     })
@@ -144,7 +163,15 @@ export async function getEmailTemplates(limit?: number) {
   }
 }
 
-export async function createEmailTemplate(data: any) {
+export async function createEmailTemplate(data: {
+  title: string;
+  metadata: {
+    name: string;
+    subject: string;
+    html_content: string;
+    category?: string;
+  };
+}) {
   try {
     const { object } = await cosmic.objects.insertOne({
       title: data.title,
@@ -177,11 +204,11 @@ export async function getDashboardStats() {
     ])
 
     const subscribedContacts = contacts.filter((contact: any) => 
-      contact.metadata?.status === 'subscribed'
+      contact.metadata?.status?.key === 'subscribed' || contact.metadata?.status === 'subscribed'
     )
 
     const sentCampaigns = campaigns.filter((campaign: any) => 
-      campaign.metadata?.status === 'sent'
+      campaign.metadata?.status?.key === 'sent' || campaign.metadata?.status === 'sent'
     )
 
     return {

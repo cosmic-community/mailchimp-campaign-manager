@@ -14,11 +14,14 @@ export async function POST(request: NextRequest) {
     }
 
     const contact = await createContact({
-      email: body.email,
-      first_name: body.first_name,
-      last_name: body.last_name,
-      status: body.status,
-      tags: body.tags
+      title: body.email,
+      metadata: {
+        email: body.email,
+        first_name: body.first_name,
+        last_name: body.last_name,
+        status: body.status,
+        tags: body.tags
+      }
     });
 
     return NextResponse.json(contact);
