@@ -8,6 +8,7 @@ if (!process.env.COSMIC_BUCKET_SLUG || !process.env.COSMIC_READ_KEY) {
 export const cosmicReadOnly = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG,
   readKey: process.env.COSMIC_READ_KEY,
+  apiEnvironment: "staging"
 })
 
 // Create full client with write permissions for server-side operations
@@ -15,6 +16,7 @@ export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG,
   readKey: process.env.COSMIC_READ_KEY,
   writeKey: process.env.COSMIC_WRITE_KEY,
+  apiEnvironment: "staging"
 })
 
 // Helper function to handle Cosmic API errors
