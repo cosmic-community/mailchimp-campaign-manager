@@ -16,6 +16,8 @@ export default function CosmicBadge({ bucketSlug }: CosmicBadgeProps): JSX.Eleme
       const timer = setTimeout(() => setIsVisible(true), 1000)
       return () => clearTimeout(timer)
     }
+    // Explicitly return undefined for the else case to satisfy TypeScript
+    return undefined
   }, [bucketSlug])
 
   const handleDismiss = (): void => {
