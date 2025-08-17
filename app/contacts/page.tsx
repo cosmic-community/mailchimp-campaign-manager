@@ -3,6 +3,10 @@ import { getContacts } from '@/lib/cosmic';
 import ContactsList from '@/components/ContactsList';
 import Navigation from '@/components/Navigation';
 
+// Force dynamic rendering - no static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ContactsPage() {
   const contacts = await getContacts(100);
 

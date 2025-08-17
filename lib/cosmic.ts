@@ -260,27 +260,55 @@ export async function deleteCampaign(campaignId: string): Promise<void> {
   }
 }
 
-// AI functions
+// AI functions - Fixed to use proper OpenAI integration
 export async function generateEmailTemplate(prompt: string): Promise<{ text: string; usage: any }> {
   try {
-    const response = await cosmic.ai.generateText({
-      prompt: `Create a professional HTML email template based on this description: ${prompt}. 
-      
-      Include proper HTML structure with inline CSS styles for email compatibility. Use professional styling with:
-      - Maximum width of 600px
-      - Proper font families (Arial, sans-serif)
-      - Responsive design principles
-      - Clear call-to-action sections
-      - Proper header, content, and footer sections
-      
-      Return only the HTML content without any explanations.`,
-      max_tokens: 2000
+    // Using OpenAI API directly since Cosmic SDK doesn't have built-in AI generation
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional email template designer. Create HTML email templates that are compatible with email clients and follow best practices.'
+          },
+          {
+            role: 'user',
+            content: `Create a professional HTML email template based on this description: ${prompt}. 
+
+Include proper HTML structure with inline CSS styles for email compatibility. Use professional styling with:
+- Maximum width of 600px
+- Proper font families (Arial, sans-serif)
+- Responsive design principles
+- Clear call-to-action sections
+- Proper header, content, and footer sections
+
+Return only the HTML content without any explanations.`
+          }
+        ],
+        max_tokens: 2000,
+        temperature: 0.7,
+      }),
     });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
     
-    return response;
+    return {
+      text: data.choices[0]?.message?.content || '',
+      usage: data.usage || {}
+    };
   } catch (error) {
     console.error('Error generating email template:', error);
-    throw new Error('Failed to generate email template');
+    throw new Error('Failed to generate email template. Make sure OPENAI_API_KEY is set in your environment variables.');
   }
 }
 

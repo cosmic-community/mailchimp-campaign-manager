@@ -3,6 +3,10 @@ import { getCampaigns } from '@/lib/cosmic';
 import CampaignsList from '@/components/CampaignsList';
 import Navigation from '@/components/Navigation';
 
+// Force dynamic rendering - no static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function CampaignsPage() {
   const campaigns = await getCampaigns(50);
 

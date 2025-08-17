@@ -3,6 +3,10 @@ import { getEmailTemplates } from '@/lib/cosmic';
 import TemplatesList from '@/components/TemplatesList';
 import Navigation from '@/components/Navigation';
 
+// Force dynamic rendering - no static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function TemplatesPage() {
   const templates = await getEmailTemplates(50);
 
@@ -17,7 +21,7 @@ export default async function TemplatesPage() {
               Email Templates
             </h1>
             <p className="text-gray-600">
-              Create and manage your email templates with AI assistance
+              Create and manage reusable email templates
             </p>
           </div>
           
