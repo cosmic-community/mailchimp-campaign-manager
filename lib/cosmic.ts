@@ -5,7 +5,6 @@ export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
   readKey: process.env.COSMIC_READ_KEY as string,
   writeKey: process.env.COSMIC_WRITE_KEY as string,
-  apiEnvironment: 'staging'
 });
 
 // Simple error helper for Cosmic SDK
@@ -34,7 +33,7 @@ export async function getContactsByStatus(status: ContactStatus): Promise<Contac
     const response = await cosmic.objects
       .find({ 
         type: 'contacts',
-        'metadata.status.key': status
+        'metadata.status': status
       })
       .props(['id', 'title', 'slug', 'metadata']);
     return response.objects as Contact[];
@@ -260,55 +259,79 @@ export async function deleteCampaign(campaignId: string): Promise<void> {
   }
 }
 
-// AI functions - Fixed to use proper OpenAI integration
+// AI functions - Updated to use Cosmic SDK AI capabilities
 export async function generateEmailTemplate(prompt: string): Promise<{ text: string; usage: any }> {
   try {
-    // Using OpenAI API directly since Cosmic SDK doesn't have built-in AI generation
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a professional email template designer. Create HTML email templates that are compatible with email clients and follow best practices.'
-          },
-          {
-            role: 'user',
-            content: `Create a professional HTML email template based on this description: ${prompt}. 
+    // Create a comprehensive prompt for email template generation
+    const enhancedPrompt = `Create a professional HTML email template based on this description: ${prompt}
 
-Include proper HTML structure with inline CSS styles for email compatibility. Use professional styling with:
-- Maximum width of 600px
-- Proper font families (Arial, sans-serif)
-- Responsive design principles
-- Clear call-to-action sections
-- Proper header, content, and footer sections
+Requirements:
+- Create complete HTML email template with proper email-safe styling
+- Use inline CSS styles for maximum email client compatibility
+- Include proper DOCTYPE and meta tags for email
+- Maximum width of 600px for email clients
+- Use web-safe fonts (Arial, Helvetica, sans-serif)
+- Include header section with logo placeholder
+- Main content area with sections for text and images
+- Call-to-action button with proper styling
+- Footer with unsubscribe link and company info
+- Responsive design that works on mobile
+- Professional color scheme
+- Proper spacing and typography
 
-Return only the HTML content without any explanations.`
-          }
-        ],
-        max_tokens: 2000,
-        temperature: 0.7,
-      }),
+Return only the complete HTML code without any explanations or markdown.`;
+
+    const response = await cosmic.ai.generateText({
+      prompt: enhancedPrompt,
+      max_tokens: 2000
     });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    
     return {
-      text: data.choices[0]?.message?.content || '',
-      usage: data.usage || {}
+      text: response.text,
+      usage: response.usage
     };
   } catch (error) {
-    console.error('Error generating email template:', error);
-    throw new Error('Failed to generate email template. Make sure OPENAI_API_KEY is set in your environment variables.');
+    console.error('Error generating email template with Cosmic AI:', error);
+    
+    // Fallback error message with helpful instructions
+    if (error instanceof Error && error.message.includes('AI features')) {
+      throw new Error('AI features are not available in your Cosmic plan. Please upgrade to use AI template generation.');
+    }
+    
+    throw new Error('Failed to generate email template. Please check your Cosmic configuration and try again.');
+  }
+}
+
+// Enhanced AI function for streaming responses (optional)
+export async function generateEmailTemplateStream(prompt: string): Promise<AsyncIterableIterator<{ text?: string; usage?: any; end?: boolean }>> {
+  try {
+    const enhancedPrompt = `Create a professional HTML email template based on this description: ${prompt}
+
+Requirements:
+- Create complete HTML email template with proper email-safe styling
+- Use inline CSS styles for maximum email client compatibility
+- Include proper DOCTYPE and meta tags for email
+- Maximum width of 600px for email clients
+- Use web-safe fonts (Arial, Helvetica, sans-serif)
+- Include header section with logo placeholder
+- Main content area with sections for text and images
+- Call-to-action button with proper styling
+- Footer with unsubscribe link and company info
+- Responsive design that works on mobile
+- Professional color scheme
+- Proper spacing and typography
+
+Return only the complete HTML code without any explanations or markdown.`;
+
+    const stream = await cosmic.ai.stream({
+      prompt: enhancedPrompt,
+      max_tokens: 2000
+    });
+
+    return stream;
+  } catch (error) {
+    console.error('Error generating email template stream with Cosmic AI:', error);
+    throw new Error('Failed to generate email template stream');
   }
 }
 

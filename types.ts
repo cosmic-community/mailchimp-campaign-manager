@@ -17,10 +17,7 @@ interface Contact extends CosmicObject {
     email: string;
     first_name?: string;
     last_name?: string;
-    status: {
-      key: ContactStatus;
-      value: string;
-    };
+    status: ContactStatus;
     tags?: string[];
   };
 }
@@ -36,10 +33,7 @@ interface EmailTemplate extends CosmicObject {
       url: string;
       imgix_url: string;
     };
-    category?: {
-      key: TemplateCategory;
-      value: string;
-    };
+    category?: TemplateCategory;
   };
 }
 
@@ -49,10 +43,7 @@ interface Campaign extends CosmicObject {
   metadata: {
     name: string;
     template?: EmailTemplate;
-    status: {
-      key: CampaignStatus;
-      value: string;
-    };
+    status: CampaignStatus;
     send_date?: string;
     target_tags?: string[];
     notes?: string;
@@ -103,6 +94,14 @@ interface AITemplateRequest {
   prompt: string;
   template_type: TemplateCategory;
   subject_line?: string;
+}
+
+interface AITemplateResponse {
+  text: string;
+  usage: {
+    input_tokens: number;
+    output_tokens: number;
+  };
 }
 
 // Email sending types
@@ -158,6 +157,7 @@ export type {
   TemplateFormData,
   CampaignFormData,
   AITemplateRequest,
+  AITemplateResponse,
   EmailSendRequest,
   EmailSendResponse,
   DashboardStats,
