@@ -160,9 +160,8 @@ export async function generateEmailTemplate(prompt: string) {
   // This would integrate with an AI service like OpenAI
   // For now, return a basic template
   return {
-    subject: 'Generated Email Subject',
     html_content: `<h1>Generated Email</h1><p>Content based on: ${prompt}</p>`,
-    text_content: `Generated Email\n\nContent based on: ${prompt}`
+    usage: 'Generated with AI template system'
   }
 }
 
@@ -175,11 +174,11 @@ export async function getDashboardStats() {
       getEmailTemplates()
     ])
 
-    const subscribedContacts = contacts.filter(contact => 
+    const subscribedContacts = contacts.filter((contact: any) => 
       contact.metadata?.status === 'subscribed'
     )
 
-    const sentCampaigns = campaigns.filter(campaign => 
+    const sentCampaigns = campaigns.filter((campaign: any) => 
       campaign.metadata?.status === 'sent'
     )
 
@@ -188,7 +187,11 @@ export async function getDashboardStats() {
       totalContacts: contacts.length,
       subscribedContacts: subscribedContacts.length,
       totalTemplates: templates.length,
-      sentCampaigns: sentCampaigns.length
+      sentCampaigns: sentCampaigns.length,
+      total_campaigns: campaigns.length,
+      total_contacts: contacts.length,
+      subscribed_contacts: subscribedContacts.length,
+      total_templates: templates.length
     }
   } catch (error) {
     console.error('Error fetching dashboard stats:', error)
@@ -197,7 +200,11 @@ export async function getDashboardStats() {
       totalContacts: 0,
       subscribedContacts: 0,
       totalTemplates: 0,
-      sentCampaigns: 0
+      sentCampaigns: 0,
+      total_campaigns: 0,
+      total_contacts: 0,
+      subscribed_contacts: 0,
+      total_templates: 0
     }
   }
 }

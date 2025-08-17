@@ -26,14 +26,14 @@ export default function CampaignForm({ templates }: CampaignFormProps) {
   const handleTemplateChange = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
     setSelectedTemplate(template || null);
-    setFormData(prev => ({ ...prev, template_id: templateId }));
+    setFormData((prev: CampaignFormData) => ({ ...prev, template_id: templateId }));
   };
 
   const handleTagChange = (tag: string) => {
-    setFormData(prev => ({
+    setFormData((prev: CampaignFormData) => ({
       ...prev,
       target_tags: prev.target_tags?.includes(tag)
-        ? prev.target_tags.filter(t => t !== tag)
+        ? prev.target_tags.filter((t: string) => t !== tag)
         : [...(prev.target_tags || []), tag]
     }));
   };
@@ -95,7 +95,7 @@ export default function CampaignForm({ templates }: CampaignFormProps) {
               type="text"
               required
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) => setFormData((prev: CampaignFormData) => ({ ...prev, name: e.target.value }))}
               className="form-input"
               placeholder="Monthly Newsletter Campaign"
             />
@@ -122,7 +122,7 @@ export default function CampaignForm({ templates }: CampaignFormProps) {
             <label className="form-label">Campaign Status *</label>
             <select
               value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as CampaignStatus }))}
+              onChange={(e) => setFormData((prev: CampaignFormData) => ({ ...prev, status: e.target.value as CampaignStatus }))}
               className="form-input"
               required
             >
@@ -137,7 +137,7 @@ export default function CampaignForm({ templates }: CampaignFormProps) {
             <input
               type="date"
               value={formData.send_date}
-              onChange={(e) => setFormData(prev => ({ ...prev, send_date: e.target.value }))}
+              onChange={(e) => setFormData((prev: CampaignFormData) => ({ ...prev, send_date: e.target.value }))}
               className="form-input"
             />
           </div>
@@ -166,7 +166,7 @@ export default function CampaignForm({ templates }: CampaignFormProps) {
             <label className="form-label">Campaign Notes</label>
             <textarea
               value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+              onChange={(e) => setFormData((prev: CampaignFormData) => ({ ...prev, notes: e.target.value }))}
               className="form-input h-24"
               placeholder="Internal notes about this campaign..."
             />

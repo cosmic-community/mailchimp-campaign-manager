@@ -18,10 +18,10 @@ export default function ContactForm() {
   const availableTags = ['Newsletter', 'Promotions', 'Product Updates', 'VIP'];
 
   const handleTagChange = (tag: string) => {
-    setFormData(prev => ({
+    setFormData((prev: ContactFormData) => ({
       ...prev,
       tags: prev.tags?.includes(tag)
-        ? prev.tags.filter(t => t !== tag)
+        ? prev.tags.filter((t: string) => t !== tag)
         : [...(prev.tags || []), tag]
     }));
   };
@@ -61,7 +61,7 @@ export default function ContactForm() {
             type="email"
             required
             value={formData.email}
-            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+            onChange={(e) => setFormData((prev: ContactFormData) => ({ ...prev, email: e.target.value }))}
             className="form-input"
             placeholder="contact@example.com"
           />
@@ -71,7 +71,7 @@ export default function ContactForm() {
           <label className="form-label">Status *</label>
           <select
             value={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as ContactStatus }))}
+            onChange={(e) => setFormData((prev: ContactFormData) => ({ ...prev, status: e.target.value as ContactStatus }))}
             className="form-input"
             required
           >
@@ -86,7 +86,7 @@ export default function ContactForm() {
           <input
             type="text"
             value={formData.first_name || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+            onChange={(e) => setFormData((prev: ContactFormData) => ({ ...prev, first_name: e.target.value }))}
             className="form-input"
             placeholder="John"
           />
@@ -97,7 +97,7 @@ export default function ContactForm() {
           <input
             type="text"
             value={formData.last_name || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+            onChange={(e) => setFormData((prev: ContactFormData) => ({ ...prev, last_name: e.target.value }))}
             className="form-input"
             placeholder="Doe"
           />

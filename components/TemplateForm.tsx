@@ -37,7 +37,7 @@ export default function TemplateForm() {
       }
 
       const data = await response.json();
-      setFormData(prev => ({
+      setFormData((prev: TemplateFormData) => ({
         ...prev,
         html_content: data.html_content
       }));
@@ -91,7 +91,7 @@ export default function TemplateForm() {
               type="text"
               required
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) => setFormData((prev: TemplateFormData) => ({ ...prev, name: e.target.value }))}
               className="form-input"
               placeholder="Monthly Newsletter"
             />
@@ -103,7 +103,7 @@ export default function TemplateForm() {
               type="text"
               required
               value={formData.subject}
-              onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+              onChange={(e) => setFormData((prev: TemplateFormData) => ({ ...prev, subject: e.target.value }))}
               className="form-input"
               placeholder="Your Monthly Update is Here!"
             />
@@ -113,7 +113,7 @@ export default function TemplateForm() {
             <label className="form-label">Category</label>
             <select
               value={formData.category}
-              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as TemplateCategory }))}
+              onChange={(e) => setFormData((prev: TemplateFormData) => ({ ...prev, category: e.target.value as TemplateCategory }))}
               className="form-input"
             >
               <option value="newsletter">Newsletter</option>
@@ -154,7 +154,7 @@ export default function TemplateForm() {
             <textarea
               required
               value={formData.html_content}
-              onChange={(e) => setFormData(prev => ({ ...prev, html_content: e.target.value }))}
+              onChange={(e) => setFormData((prev: TemplateFormData) => ({ ...prev, html_content: e.target.value }))}
               className="form-input h-64"
               placeholder="<html><head>...</head><body>...</body></html>"
             />

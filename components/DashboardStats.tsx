@@ -6,25 +6,25 @@ export default async function DashboardStats() {
   const statItems = [
     {
       label: 'Total Contacts',
-      value: stats.total_contacts,
+      value: stats.totalContacts,
       icon: '👥',
       color: 'text-blue-600'
     },
     {
       label: 'Subscribed',
-      value: stats.subscribed_contacts,
+      value: stats.subscribedContacts,
       icon: '✅',
       color: 'text-green-600'
     },
     {
       label: 'Templates',
-      value: stats.total_templates,
+      value: stats.totalTemplates,
       icon: '📝',
       color: 'text-purple-600'
     },
     {
       label: 'Campaigns',
-      value: stats.total_campaigns,
+      value: stats.totalCampaigns,
       icon: '📮',
       color: 'text-orange-600'
     }

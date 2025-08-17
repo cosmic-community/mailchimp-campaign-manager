@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
     const result = await generateEmailTemplate(prompt);
 
     return NextResponse.json({
-      html_content: result.text,
-      usage: result.usage
+      html_content: result.html_content,
+      usage: result.usage || 'Generated with AI'
     });
   } catch (error) {
     console.error('Error generating template:', error);
