@@ -18,7 +18,7 @@ export default function CosmicBadge({ bucketSlug }: CosmicBadgeProps): JSX.Eleme
     }
   }, [bucketSlug])
 
-  const handleDismiss = () => {
+  const handleDismiss = (): void => {
     setIsVisible(false)
     localStorage.setItem('cosmic-badge-dismissed', 'true')
   }
