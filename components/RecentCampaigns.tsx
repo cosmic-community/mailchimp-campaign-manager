@@ -58,8 +58,8 @@ export default async function RecentCampaigns() {
               </div>
               
               <div className="flex items-center space-x-3">
-                <span className={`badge ${getStatusColor(campaign.metadata.status.key)}`}>
-                  {campaign.metadata.status.value}
+                <span className={`badge ${getStatusColor(campaign.metadata.status)}`}>
+                  {campaign.metadata.status}
                 </span>
                 
                 {campaign.metadata.send_date && (

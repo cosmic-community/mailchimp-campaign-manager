@@ -12,7 +12,7 @@ export default function ContactsList({ contacts }: ContactsListProps) {
 
   const filteredContacts = contacts.filter(contact => {
     if (filterStatus === 'all') return true;
-    return contact.metadata.status.key === filterStatus;
+    return contact.metadata.status === filterStatus;
   });
 
   const getStatusColor = (status: string) => {
@@ -96,8 +96,8 @@ export default function ContactsList({ contacts }: ContactsListProps) {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`badge ${getStatusColor(contact.metadata.status.key)}`}>
-                    {contact.metadata.status.value}
+                  <span className={`badge ${getStatusColor(contact.metadata.status)}`}>
+                    {contact.metadata.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

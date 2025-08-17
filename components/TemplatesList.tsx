@@ -65,8 +65,8 @@ export default function TemplatesList({ templates }: TemplatesListProps) {
                 {template.title}
               </h3>
               {template.metadata.category && (
-                <span className={`badge ${getCategoryColor(template.metadata.category.key)}`}>
-                  {template.metadata.category.value}
+                <span className={`badge ${getCategoryColor(template.metadata.category)}`}>
+                  {template.metadata.category}
                 </span>
               )}
             </div>

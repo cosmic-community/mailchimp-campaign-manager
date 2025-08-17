@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     if (campaign.metadata.target_tags && campaign.metadata.target_tags.length > 0) {
       // Filter contacts by tags
       targetContacts = allContacts.filter(contact => 
-        contact.metadata.status.key === 'subscribed' &&
+        contact.metadata.status === 'subscribed' &&
         contact.metadata.tags &&
         campaign.metadata.target_tags?.some(tag => 
           contact.metadata.tags?.includes(tag)
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     } else {
       // Send to all subscribed contacts
       targetContacts = allContacts.filter(contact => 
-        contact.metadata.status.key === 'subscribed'
+        contact.metadata.status === 'subscribed'
       );
     }
 

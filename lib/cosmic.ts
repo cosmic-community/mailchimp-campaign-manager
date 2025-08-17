@@ -259,7 +259,7 @@ export async function deleteCampaign(campaignId: string): Promise<void> {
   }
 }
 
-// AI functions - Updated to use Cosmic SDK AI capabilities
+// AI functions - Updated to remove the problematic stream function
 export async function generateEmailTemplate(prompt: string): Promise<{ text: string; usage: any }> {
   try {
     // Create a comprehensive prompt for email template generation
@@ -299,39 +299,6 @@ Return only the complete HTML code without any explanations or markdown.`;
     }
     
     throw new Error('Failed to generate email template. Please check your Cosmic configuration and try again.');
-  }
-}
-
-// Enhanced AI function for streaming responses (optional)
-export async function generateEmailTemplateStream(prompt: string): Promise<AsyncIterableIterator<{ text?: string; usage?: any; end?: boolean }>> {
-  try {
-    const enhancedPrompt = `Create a professional HTML email template based on this description: ${prompt}
-
-Requirements:
-- Create complete HTML email template with proper email-safe styling
-- Use inline CSS styles for maximum email client compatibility
-- Include proper DOCTYPE and meta tags for email
-- Maximum width of 600px for email clients
-- Use web-safe fonts (Arial, Helvetica, sans-serif)
-- Include header section with logo placeholder
-- Main content area with sections for text and images
-- Call-to-action button with proper styling
-- Footer with unsubscribe link and company info
-- Responsive design that works on mobile
-- Professional color scheme
-- Proper spacing and typography
-
-Return only the complete HTML code without any explanations or markdown.`;
-
-    const stream = await cosmic.ai.stream({
-      prompt: enhancedPrompt,
-      max_tokens: 2000
-    });
-
-    return stream;
-  } catch (error) {
-    console.error('Error generating email template stream with Cosmic AI:', error);
-    throw new Error('Failed to generate email template stream');
   }
 }
 

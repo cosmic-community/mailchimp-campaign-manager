@@ -113,8 +113,8 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
                 <h3 className="text-lg font-medium text-gray-900">
                   {campaign.title}
                 </h3>
-                <span className={`badge ${getStatusColor(campaign.metadata.status.key)}`}>
-                  {campaign.metadata.status.value}
+                <span className={`badge ${getStatusColor(campaign.metadata.status)}`}>
+                  {campaign.metadata.status}
                 </span>
               </div>
               
@@ -149,7 +149,7 @@ export default function CampaignsList({ campaigns }: CampaignsListProps) {
             </div>
             
             <div className="flex space-x-2">
-              {campaign.metadata.status.key !== 'sent' && (
+              {campaign.metadata.status !== 'sent' && (
                 <>
                   <button
                     onClick={() => handleSendTest(campaign.id)}
